@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     
     public static GameManager instance;
 
+    public ClientUDP ClientUdp;
     public AnimText MainText;
     public List<string> DefaultTextes = new List<string>();
     public GameObject DefaultScreen;
@@ -62,6 +63,8 @@ public class GameManager : MonoBehaviour
     private bool _isDown;
     private int _currentLangAnim;
 
+    private float _timer;
+
     private void Awake()
     {
         if(instance == null)
@@ -70,6 +73,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        ClientUdp = GetComponent<ClientUDP>();
         b_Uzb.onClick.AddListener(OnLangUzb);
         //b_Arab.onClick.AddListener(OnLangArab);
         b_Rus.onClick.AddListener(OnLangRus);
@@ -89,6 +93,8 @@ public class GameManager : MonoBehaviour
         ChangeLanguageAnim();
         _coroutine = StartCoroutine(StartAnimation());
         //_coroutine = StartCoroutine(StartAnimation());
+        ClientUdp.Init();
+        //MySendMessage("01");
     }
 
     private void ChangeLanguageAnim()
@@ -134,7 +140,15 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-       
+        if (Input.anyKeyDown)
+        {
+            _timer = Time.time;
+        }
+
+        if (!DefaultScreen.activeSelf && Time.time - _timer > 100f)
+        {
+            OnBack();
+        }
     }
     
 
@@ -201,6 +215,7 @@ public class GameManager : MonoBehaviour
         if(_coroutine != null)
             StopCoroutine(_coroutine);
         _coroutine = StartCoroutine(StartAnimation());
+        MySendMessage("23kartastandby");
     }
 
     private void OffDefault()
@@ -245,6 +260,39 @@ public class GameManager : MonoBehaviour
         {
             region.Hide();
         }
+    }
+
+    public void MySendMessage(string str)
+    {
+        string message = "{\"jsonrpc\":\"2.0\", \"id\":39, \"method\":\"Pixera.Compound.applyCueOnTimeline\", \"params\":{\"timelineName\":\"alphaarea1\", \"cueName\":\"";
+        message+=str;
+        switch (CurrentLang)
+        {
+            case 1:
+            {
+                message+="uzb";
+                break;
+            }
+            case 2:
+            {
+                message+="arab";
+                break;
+            }
+            case 3:
+            {
+                message+="en";
+                break;
+            }
+            case 4:
+            {
+                message+="ru";
+                break;
+            }
+        }
+
+        message += "\", \"blendDuration\":1}}";
+        //Debug.Log(message);
+        ClientUdp.AddMessage(message);
     }
 
 }

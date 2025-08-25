@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class RegionClass : MonoBehaviour
 {
 
+    public string Number;
     public List<Sprite> MainSprites = new List<Sprite>();
     public List<Sprite> SliderSprites = new List<Sprite>();
 
@@ -66,6 +67,7 @@ public class RegionClass : MonoBehaviour
             SliderPanel.SetActive(true);
         }
 
+        GameManager.instance.MySendMessage("23kartastena"+Number);
     }
 
 
