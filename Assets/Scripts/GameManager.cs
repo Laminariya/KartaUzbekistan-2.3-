@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,7 +8,6 @@ using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
-    
     public enum Language
     {
         None = 0,
@@ -16,22 +16,22 @@ public class GameManager : MonoBehaviour
         Eng = 3,
         Rus = 4
     }
-    
+
     public static GameManager instance;
 
     public ClientUDP ClientUdp;
     public AnimText MainText;
     public List<string> DefaultTextes = new List<string>();
     public GameObject DefaultScreen;
-    
+
     public TMP_Text PushScreenText;
     public List<string> PushLangs = new List<string>();
-    
+
     public Button b_Uzb;
     [HideInInspector] public Button b_Arab;
     public Button b_Rus;
     [HideInInspector] public Button b_Eng;
-    
+
     public Image MainImage;
     public Button BackButton;
     public Sprite MainSprite_Rus;
@@ -39,14 +39,14 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public Sprite MainSprite_Eng;
     [HideInInspector] public Sprite MainSprite_Arab;
     public List<RegionClass> Regions = new List<RegionClass>();
-    
-    
-    public Dictionary<int,List<string>> languageList = new Dictionary<int,List<string>>();
+
+
+    public Dictionary<int, List<string>> languageList = new Dictionary<int, List<string>>();
     public List<string> RusLang = new List<string>();
     public List<string> EngLang = new List<string>();
     public List<string> ArabLang = new List<string>();
     public List<string> UzbLang = new List<string>();
-    
+
     public List<TMP_Text> TextObjects = new List<TMP_Text>();
     public List<AnimText> AnimTextObjects = new List<AnimText>();
 
@@ -55,7 +55,7 @@ public class GameManager : MonoBehaviour
     public int CountTextPerSecond;
     public float SpeedSpawnText;
     public float SpeedAnimText;
-    
+
     [HideInInspector] public int CurrentLang = 0;
     private Coroutine _coroutine;
     private float _timeout;
@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if(instance == null)
+        if (instance == null)
             instance = this;
     }
 
@@ -107,8 +107,9 @@ public class GameManager : MonoBehaviour
             if (k == languageList[_currentLangAnim].Count)
                 k = 0;
         }
-        MainText.SetText(DefaultTextes[_currentLangAnim-1]);
-        PushScreenText.text = PushLangs[_currentLangAnim-1];
+
+        MainText.SetText(DefaultTextes[_currentLangAnim - 1]);
+        PushScreenText.text = PushLangs[_currentLangAnim - 1];
     }
 
     private void ChangeLanguage()
@@ -150,22 +151,21 @@ public class GameManager : MonoBehaviour
             OnBack();
         }
     }
-    
+
 
     IEnumerator StartAnimation()
     {
         float timer = Time.time;
         while (true)
         {
-            
             _scale = Vector3.one;
-            
+
             yield return new WaitForSeconds(0.3f);
 
             AnimTextObjects[Random.Range(0, AnimTextObjects.Count)].PlayEffect();
 
             yield return null;
-            
+
             if (Time.time - timer > 5f)
             {
                 timer = Time.time;
@@ -206,13 +206,14 @@ public class GameManager : MonoBehaviour
                 break;
             }
         }
+
         OnDefault();
     }
 
     private void OnDefault()
     {
         DefaultScreen.SetActive(true);
-        if(_coroutine != null)
+        if (_coroutine != null)
             StopCoroutine(_coroutine);
         _coroutine = StartCoroutine(StartAnimation());
         MySendMessage("23kartastandby");
@@ -222,7 +223,7 @@ public class GameManager : MonoBehaviour
     {
         HideAllSliders();
         DefaultScreen.SetActive(false);
-        if(_coroutine != null)
+        if (_coroutine != null)
             StopCoroutine(_coroutine);
     }
 
@@ -264,28 +265,29 @@ public class GameManager : MonoBehaviour
 
     public void MySendMessage(string str)
     {
-        string message = "{\"jsonrpc\":\"2.0\", \"id\":39, \"method\":\"Pixera.Compound.applyCueOnTimeline\", \"params\":{\"timelineName\":\"alphaarea1\", \"cueName\":\"";
-        message+=str;
+        string message =
+            "{\"jsonrpc\":\"2.0\", \"id\":39, \"method\":\"Pixera.Compound.applyCueOnTimeline\", \"params\":{\"timelineName\":\"area23\", \"cueName\":\"";
+        message += str;
         switch (CurrentLang)
         {
             case 1:
             {
-                message+="uzb";
+                message += "uzb";
                 break;
             }
             case 2:
             {
-                message+="arab";
+                message += "arab";
                 break;
             }
             case 3:
             {
-                message+="en";
+                message += "en";
                 break;
             }
             case 4:
             {
-                message+="ru";
+                message += "ru";
                 break;
             }
         }
@@ -294,5 +296,4 @@ public class GameManager : MonoBehaviour
         //Debug.Log(message);
         ClientUdp.AddMessage(message);
     }
-
 }
