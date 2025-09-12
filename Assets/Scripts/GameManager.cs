@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour
     private float _timeout;
     private Vector3 _scale;
     private bool _isDown;
-    private int _currentLangAnim;
+    public int _currentLangAnim;
 
     private float _timer;
 
@@ -90,14 +90,13 @@ public class GameManager : MonoBehaviour
         languageList.Add(2, new List<string>(ArabLang));
         CurrentLang = 4;
         _currentLangAnim = 4;
-        ChangeLanguageAnim();
-        _coroutine = StartCoroutine(StartAnimation());
+        //ChangeLanguageAnim();
         //_coroutine = StartCoroutine(StartAnimation());
         ClientUdp.Init();
         //MySendMessage("01");
     }
 
-    private void ChangeLanguageAnim()
+    public void ChangeLanguageAnim()
     {
         int k = 0;
         for (int i = 0; i < AnimTextObjects.Count; i++)
@@ -139,18 +138,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        if (Input.anyKeyDown)
-        {
-            _timer = Time.time;
-        }
-
-        if (!DefaultScreen.activeSelf && Time.time - _timer > 100f)
-        {
-            OnBack();
-        }
-    }
+    // private void Update()
+    // {
+    //     if (Input.anyKeyDown)
+    //     {
+    //         _timer = Time.time;
+    //     }
+    //
+    //     if (!DefaultScreen.activeSelf && Time.time - _timer > 100f)
+    //     {
+    //         OnBack();
+    //     }
+    // }
 
 
     IEnumerator StartAnimation()
@@ -295,5 +294,33 @@ public class GameManager : MonoBehaviour
         message += "\", \"blendDuration\":1}}";
         //Debug.Log(message);
         ClientUdp.AddMessage(message);
+    }
+
+    public string GetRandomString()
+    {
+        string result = "";
+        switch (CurrentLang)
+        {
+            case 1:
+            {
+                return UzbLang[Random.Range(0, UzbLang.Count)];
+            }
+            case 2:
+            {
+                return result;
+            }
+            case 3:
+            {
+                return result;
+            }
+            case 4:
+            {
+                return RusLang[Random.Range(0, RusLang.Count)];
+            }
+            default:
+            {
+                return result;
+            }
+        }
     }
 }

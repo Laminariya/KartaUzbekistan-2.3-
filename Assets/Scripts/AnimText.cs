@@ -11,6 +11,7 @@ public class AnimText : MonoBehaviour
 {
     
     private float _speed;
+    
     public TMP_Text _text;
     public TMP_Text _text2;
     public Color _textColor;
@@ -21,22 +22,13 @@ public class AnimText : MonoBehaviour
     private float _startScale;
     private Tweener _tweener;
 
-    private void Start()
+    public void Init(float speed)
     {
-        _speed = 1f;
+        _speed = speed;
         _startScale = transform.localScale.x;
         _anyColor = _textColor;
         _text2.color = new Color(_text2.color.r, _text2.color.g, _text2.color.b, _startScale);
         _text.color = new Color(_text.color.r, _text.color.g, _text.color.b, _startScale);
-    }
-
-    public void Init(string text, float speed)
-    {
-        _speed = speed;
-        _text = GetComponent<TMP_Text>();
-        _text.text = text;
-        transform.localScale = Vector3.one/2f;
-        transform.position = new Vector3(Random.Range(410,1640), Random.Range(176, 920), 0);
     }
 
     public void SetText(string text)
@@ -57,9 +49,6 @@ public class AnimText : MonoBehaviour
 
     public void PlayEffect()
     {
-        // if(_coroutine != null)
-        //     StopCoroutine(_coroutine);
-        // _coroutine = StartCoroutine(StartAnim());
         if (_tweener != null && _tweener.IsActive())
         {
             return;
@@ -70,7 +59,6 @@ public class AnimText : MonoBehaviour
 
     IEnumerator StartChangeText(string text)
     {
-       
         string myText = text;
         _text.text = "";
 
@@ -92,19 +80,9 @@ public class AnimText : MonoBehaviour
         }
         
         int count = myText.Length;
-        //Debug.Log(count + " "+ myText.Length + " " + _text2.text.Length);
 
         for (int i = 0; i < count; i++)
         {
-            // for (int j = 0; j < 5; j++)
-            // {
-            //     if (myText[i] != ' ')
-            //     {
-            //         _text.text = _text.text.Substring(0, i);
-            //         _text.text = _text.text + j;
-            //     }
-            //     yield return new WaitForSeconds(0.02f);
-            // }
             yield return new WaitForSeconds(0.02f);
             _text.text = _text.text.Substring(0, i)+myText[i];
             string space = "";

@@ -47,6 +47,8 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\ClientUDP.cs" />
     <Compile Include="Assets\Scripts\AnimText.cs" />
+    <Compile Include="Assets\Scripts\MoveText.cs" />
+    <Compile Include="Assets\Scripts\AnimStartScreen.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\RegionClass.cs" />
     <Reference Include="UnityEngine">
