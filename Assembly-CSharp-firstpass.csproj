@@ -701,6 +701,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="TextJuicer.csproj">
+      <Project>{5ff59225-1b3b-d988-a7dc-eaf25f9d884c}</Project>
+      <Name>TextJuicer</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.2D.IK.Runtime.csproj">
       <Project>{770d7743-9da9-c8c2-dc7d-43be22631ced}</Project>
       <Name>Unity.2D.IK.Runtime</Name>
@@ -728,6 +732,10 @@
     <ProjectReference Include="Unity.VisualScripting.Shared.Editor.csproj">
       <Project>{d55945b5-4b78-28c2-c3d1-a89923d3f328}</Project>
       <Name>Unity.VisualScripting.Shared.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="TextJuicer-Editor.csproj">
+      <Project>{a8a98bf4-0a57-1190-91b0-ba77e87e5ff4}</Project>
+      <Name>TextJuicer-Editor</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.VisualStudio.Editor.csproj">
       <Project>{aa56188e-a619-35fa-e0a8-5f9d76c65151}</Project>

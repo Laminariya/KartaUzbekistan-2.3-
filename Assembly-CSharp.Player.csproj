@@ -46,10 +46,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\ClientUDP.cs" />
-    <Compile Include="Assets\Scripts\AnimText.cs" />
     <Compile Include="Assets\Scripts\MoveText.cs" />
     <Compile Include="Assets\Scripts\AnimStartScreen.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
+    <Compile Include="Assets\Scripts\AnimTextClass.cs" />
     <Compile Include="Assets\Scripts\RegionClass.cs" />
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.39f1\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\Variations\mono\Managed\UnityEngine.dll</HintPath>
@@ -635,6 +635,10 @@
     <ProjectReference Include="Assembly-CSharp-firstpass.Player.csproj">
       <Project>{871c1840-d125-bedd-a999-3b0f6ec9806d}</Project>
       <Name>Assembly-CSharp-firstpass.Player</Name>
+    </ProjectReference>
+    <ProjectReference Include="TextJuicer.Player.csproj">
+      <Project>{244e6be2-f232-54cd-ed1c-0b6463734b91}</Project>
+      <Name>TextJuicer.Player</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.2D.IK.Runtime.Player.csproj">
       <Project>{78380c33-3144-6652-7231-e165b7504cee}</Project>

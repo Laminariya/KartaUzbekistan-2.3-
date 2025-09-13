@@ -1,5 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using BrunoMikoski.TextJuicer;
+using BrunoMikoski.TextJuicer.Modifiers;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,67 +11,179 @@ public class RegionClass : MonoBehaviour
 {
 
     public string Number;
-    public List<Sprite> MainSprites = new List<Sprite>();
-    public List<Sprite> SliderSprites = new List<Sprite>();
 
-    public GameObject SliderPanel;
-    public Image SliderImage;
+    public AnimTextClass Name;
+    public GameObject Temi;
+    
+    public List<string> MenuText1 = new List<string>();
+    public List<string> MenuText2 = new List<string>();
+    
+    private List<Image> Images = new List<Image>();
+    private List<AnimTextClass> TextJuicers = new List<AnimTextClass>();
     
     private Button _button;
+    private GameManager _manager;
+    private Image _image;
     
     public void Init()
     {
-        _button = GetComponent<Button>();
+        _image = GetComponent<Image>();
+        gameObject.SetActive(true);
+        _manager = GameManager.instance;
+        _button = GetComponentInChildren<Button>();
         _button.onClick.AddListener(OnClick);
+        Images = GetComponentsInChildren<Image>(true).ToList();
+        TextJuicers = GetComponentsInChildren<AnimTextClass>(true).ToList();
+        Images.Remove(Images[Images.Count - 1]);
+
+        bool number = false;
+        for (int i = 0; i < Images.Count; i++)
+        {
+            if (Images[i].name == "Button" || number)
+            {
+                number = true;
+                Images.Remove(Images[i]);
+            }
+        }
+
+        if (Name != null)
+        {
+            Name.Init();
+            Name.textJuicer.SetProgress(0);
+            Name.textJuicer.Update();
+        }
+
+        foreach (var textClass in TextJuicers)
+        {
+            textClass.Init();
+        }
+        Hide();
     }
 
     public void Hide()
     {
-        if (SliderPanel != null)
-            SliderPanel.SetActive(false);
+        _manager.TemiObrasheniy.gameObject.SetActive(false);
+        _image.enabled = false;
+        
+        foreach (var textJuicer in TextJuicers)
+        {
+            textJuicer.gameObject.SetActive(false);
+        }
+
+        foreach (var image in Images)
+        {
+            image.enabled = false;
+        }
+        if (Name != null)
+        {
+            Name.textJuicer.SetProgress(0);
+            Name.textJuicer.Update();
+        }
+    }
+
+    public void ChangeLang()
+    {
+        foreach (var textJuicer in TextJuicers)
+        {
+            textJuicer.ChangeLanguage(_manager.CurrentLang);
+        }
+        if (Name != null)
+        {
+            Name.ChangeLanguage(_manager.CurrentLang);
+        }
     }
 
     private void OnClick()
     {
-        GameManager.instance.HideAllSliders();
-        switch (GameManager.instance.CurrentLang)
-        {
-            case 1:
-            {
-                GameManager.instance.MainImage.sprite = MainSprites[0];
-                if(SliderPanel != null)
-                    SliderImage.sprite = SliderSprites[0];
-                break;
-            }
-            case 2:
-            {
-                GameManager.instance.MainImage.sprite = MainSprites[1];
-                if(SliderPanel != null)
-                    SliderImage.sprite = SliderSprites[1];
-                break;
-            }
-            case 3:
-            {
-                GameManager.instance.MainImage.sprite = MainSprites[2];
-                if(SliderPanel != null)
-                    SliderImage.sprite = SliderSprites[2];
-                break;
-            }
-            case 4:
-            {
-                GameManager.instance.MainImage.sprite = MainSprites[3];
-                if(SliderPanel != null)
-                    SliderImage.sprite = SliderSprites[3];
-                break;
-            }
-        }
+        
+        ChangeLang();
+        
+        if(_manager.CurrentRegion!=null)
+            _manager.CurrentRegion.Hide();
+        _manager.TemiObrasheniy.gameObject.SetActive(true);
+        _manager.CurrentRegion = this;
+        _image.enabled = true;
+        
+       
 
-        if (SliderPanel != null)
+        
+        foreach (var image in Images)
         {
-            SliderPanel.SetActive(true);
+            image.enabled = true;
+            image.color = new Color(1f, 1f, 1f, 0f);
+            image.DOFade(1f, 0.5f);
         }
+        
+        _image.color = new Color(1f, 1f, 1f, 0f);
+
+        _image.DOFade(1f, 0.5f).OnComplete(StartShowAnim);
+        
 
         GameManager.instance.MySendMessage("23kartastena"+Number);
+    }
+
+    public void StartShowAnim()
+    {
+        foreach (var textJuicer in TextJuicers)
+        {
+            textJuicer.gameObject.SetActive(true);
+            textJuicer.textJuicer.SetProgress(0f);
+            textJuicer.textJuicer.Update();
+        }
+
+        if (Name != null)
+        {
+            Name.textJuicer.SetProgress(0);
+            Name.textJuicer.Update();
+        }
+        StartCoroutine(ShowAnim());
+    }
+
+    IEnumerator ShowAnim()
+    {
+        float progress = 1f;
+        
+        progress = 0f;
+        while (progress<1f)
+        {
+            progress += Time.deltaTime * _manager.SpeedAnimText;
+            foreach (var textJuicer in TextJuicers)
+            {
+                textJuicer.textJuicer.SetProgress(progress);
+                textJuicer.textJuicer.Update();
+            }
+
+            if (Name != null)
+            {
+                Name.textJuicer.SetProgress(progress);
+                Name.textJuicer.Update();
+            }
+            
+            yield return null;
+        }
+    }
+
+    IEnumerator HideAnim()
+    {
+        float progress = 1f;
+        while (progress>0f)
+        {
+            progress -= Time.deltaTime * _manager.SpeedAnimText;
+            foreach (var textJuicer in TextJuicers)
+            {
+                textJuicer.textJuicer.SetProgress(progress);
+                textJuicer.textJuicer.Update();
+            }
+
+            if (Name != null)
+            {
+                Name.textJuicer.SetProgress(progress);
+                Name.textJuicer.Update();
+            }
+
+            
+            yield return null;
+        }
     }
 
 

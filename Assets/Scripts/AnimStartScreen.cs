@@ -75,8 +75,7 @@ public class AnimStartScreen : MonoBehaviour
                 {
                     GameManager.instance._currentLangAnim = 1;
                 }
-
-                GameManager.instance.ChangeLanguageAnim();
+                
             }
         }
     }

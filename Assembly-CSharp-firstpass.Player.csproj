@@ -634,6 +634,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="TextJuicer.Player.csproj">
+      <Project>{244e6be2-f232-54cd-ed1c-0b6463734b91}</Project>
+      <Name>TextJuicer.Player</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.2D.IK.Runtime.Player.csproj">
       <Project>{78380c33-3144-6652-7231-e165b7504cee}</Project>
       <Name>Unity.2D.IK.Runtime.Player</Name>

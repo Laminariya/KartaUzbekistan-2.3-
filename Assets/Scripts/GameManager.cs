@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using BrunoMikoski.TextJuicer;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,60 +10,34 @@ using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
-    public enum Language
-    {
-        None = 0,
-        Uzb = 1,
-        Arab = 2,
-        Eng = 3,
-        Rus = 4
-    }
 
     public static GameManager instance;
 
-    public ClientUDP ClientUdp;
-    public AnimText MainText;
-    public List<string> DefaultTextes = new List<string>();
+    [HideInInspector] public ClientUDP ClientUdp;
     public GameObject DefaultScreen;
 
-    public TMP_Text PushScreenText;
-    public List<string> PushLangs = new List<string>();
-
     public Button b_Uzb;
-    [HideInInspector] public Button b_Arab;
     public Button b_Rus;
-    [HideInInspector] public Button b_Eng;
-
-    public Image MainImage;
+    public AnimTextClass TemiObrasheniy;
+    
     public Button BackButton;
-    public Sprite MainSprite_Rus;
-    public Sprite MainSprite_Uzb;
-    [HideInInspector] public Sprite MainSprite_Eng;
-    [HideInInspector] public Sprite MainSprite_Arab;
     public List<RegionClass> Regions = new List<RegionClass>();
 
 
     public Dictionary<int, List<string>> languageList = new Dictionary<int, List<string>>();
     public List<string> RusLang = new List<string>();
-    public List<string> EngLang = new List<string>();
-    public List<string> ArabLang = new List<string>();
     public List<string> UzbLang = new List<string>();
+    public List<AnimTextClass> NameRegions = new List<AnimTextClass>();
 
-    public List<TMP_Text> TextObjects = new List<TMP_Text>();
-    public List<AnimText> AnimTextObjects = new List<AnimText>();
 
-    public Transform ParentText;
-    public GameObject TextPrefab;
-    public int CountTextPerSecond;
-    public float SpeedSpawnText;
     public float SpeedAnimText;
-
     [HideInInspector] public int CurrentLang = 0;
+    [HideInInspector] public RegionClass CurrentRegion;
     private Coroutine _coroutine;
     private float _timeout;
-    private Vector3 _scale;
     private bool _isDown;
     public int _currentLangAnim;
+    private Color _currentColor;
 
     private float _timer;
 
@@ -73,68 +49,56 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        _currentColor = b_Rus.image.color;
         ClientUdp = GetComponent<ClientUDP>();
         b_Uzb.onClick.AddListener(OnLangUzb);
-        //b_Arab.onClick.AddListener(OnLangArab);
         b_Rus.onClick.AddListener(OnLangRus);
-        //b_Eng.onClick.AddListener(OnLangEng);
+        
         foreach (var region in Regions)
         {
             region.Init();
         }
 
         BackButton.onClick.AddListener(OnBack);
-        languageList.Add(1, new List<string>(UzbLang));
-        languageList.Add(3, new List<string>(EngLang));
-        languageList.Add(4, new List<string>(RusLang));
-        languageList.Add(2, new List<string>(ArabLang));
-        CurrentLang = 4;
-        _currentLangAnim = 4;
-        //ChangeLanguageAnim();
-        //_coroutine = StartCoroutine(StartAnimation());
-        ClientUdp.Init();
-        //MySendMessage("01");
-    }
-
-    public void ChangeLanguageAnim()
-    {
-        int k = 0;
-        for (int i = 0; i < AnimTextObjects.Count; i++)
+        languageList.Add(0, new List<string>(UzbLang));
+        languageList.Add(1, new List<string>(RusLang));
+        CurrentLang = 1;
+        _currentLangAnim = 1;
+        TemiObrasheniy.Init();
+        TemiObrasheniy.gameObject.SetActive(false);
+        foreach (var nameRegion in NameRegions)
         {
-            AnimTextObjects[i].SetText(languageList[_currentLangAnim][k]);
-            k++;
-            if (k == languageList[_currentLangAnim].Count)
-                k = 0;
+            nameRegion.Init();
         }
-
-        MainText.SetText(DefaultTextes[_currentLangAnim - 1]);
-        PushScreenText.text = PushLangs[_currentLangAnim - 1];
+        
+        ClientUdp.Init();
     }
 
     private void ChangeLanguage()
     {
-        switch (CurrentLang)
+        TemiObrasheniy.ChangeLanguage(CurrentLang);
+        foreach (var nameRegion in NameRegions)
         {
-            case 1:
+            nameRegion.ChangeLanguage(CurrentLang);
+        }
+
+        StartCoroutine(ShowAnim());
+    }
+    
+    IEnumerator ShowAnim()
+    {
+        float progress = 0f;
+        
+        while (progress<1f)
+        {
+            progress += Time.deltaTime * SpeedAnimText;
+            foreach (var textJuicer in NameRegions)
             {
-                MainImage.sprite = MainSprite_Uzb;
-                break;
+                textJuicer.textJuicer.SetProgress(progress);
+                textJuicer.textJuicer.Update();
             }
-            case 2:
-            {
-                MainImage.sprite = MainSprite_Arab;
-                break;
-            }
-            case 3:
-            {
-                MainImage.sprite = MainSprite_Eng;
-                break;
-            }
-            case 4:
-            {
-                MainImage.sprite = MainSprite_Rus;
-                break;
-            }
+            
+            yield return null;
         }
     }
 
@@ -152,106 +116,53 @@ public class GameManager : MonoBehaviour
     // }
 
 
-    IEnumerator StartAnimation()
-    {
-        float timer = Time.time;
-        while (true)
-        {
-            _scale = Vector3.one;
-
-            yield return new WaitForSeconds(0.3f);
-
-            AnimTextObjects[Random.Range(0, AnimTextObjects.Count)].PlayEffect();
-
-            yield return null;
-
-            if (Time.time - timer > 5f)
-            {
-                timer = Time.time;
-                if (_currentLangAnim == 1)
-                    _currentLangAnim = 4;
-                else
-                {
-                    _currentLangAnim = 1;
-                }
-
-                ChangeLanguageAnim();
-            }
-        }
-    }
+    
 
     private void OnBack()
     {
-        switch (CurrentLang)
-        {
-            case 1:
-            {
-                MainImage.sprite = MainSprite_Uzb;
-                break;
-            }
-            case 2:
-            {
-                MainImage.sprite = MainSprite_Arab;
-                break;
-            }
-            case 3:
-            {
-                MainImage.sprite = MainSprite_Eng;
-                break;
-            }
-            case 4:
-            {
-                MainImage.sprite = MainSprite_Rus;
-                break;
-            }
-        }
-
-        OnDefault();
+        BackButton.enabled = false;
+        BackButton.image.DOFade(1f, 0.3f);
+        BackButton.image.DOFade(0f, 0.3f).SetDelay(0.3f).OnComplete(OnDefault);
     }
 
     private void OnDefault()
     {
+        if(CurrentRegion != null)
+            CurrentRegion.Hide();
+        TemiObrasheniy.gameObject.SetActive(false);
         DefaultScreen.SetActive(true);
-        if (_coroutine != null)
-            StopCoroutine(_coroutine);
-        _coroutine = StartCoroutine(StartAnimation());
         MySendMessage("23kartastandby");
+        BackButton.enabled = true;
     }
 
     private void OffDefault()
     {
-        HideAllSliders();
+        //HideAllSliders();
+        TemiObrasheniy.gameObject.SetActive(false);
         DefaultScreen.SetActive(false);
         if (_coroutine != null)
             StopCoroutine(_coroutine);
+        ChangeLanguage();
+        b_Uzb.enabled = true;
+        b_Rus.enabled = true;
     }
 
     private void OnLangUzb()
     {
-        OffDefault();
-        CurrentLang = 1;
-        ChangeLanguage();
-    }
-
-    private void OnLangArab()
-    {
-        OffDefault();
-        CurrentLang = 2;
-        ChangeLanguage();
-    }
-
-    private void OnLangEng()
-    {
-        OffDefault();
-        CurrentLang = 3;
-        ChangeLanguage();
+        CurrentLang = 0;
+        b_Uzb.enabled = false;
+        b_Rus.enabled = false;
+        b_Uzb.image.DOFade(1f, 0.3f);
+        b_Uzb.image.DOFade(0f, 0.3f).SetDelay(0.3f).OnComplete(OffDefault);
     }
 
     private void OnLangRus()
     {
-        OffDefault();
-        CurrentLang = 4;
-        ChangeLanguage();
+        CurrentLang = 0;
+        b_Uzb.enabled = false;
+        b_Rus.enabled = false;
+        b_Rus.image.DOFade(1f, 0.3f);
+        b_Rus.image.DOFade(0f, 0.3f).SetDelay(0.3f).OnComplete(OffDefault);
     }
 
     public void HideAllSliders()
@@ -301,19 +212,11 @@ public class GameManager : MonoBehaviour
         string result = "";
         switch (CurrentLang)
         {
-            case 1:
+            case 0:
             {
                 return UzbLang[Random.Range(0, UzbLang.Count)];
             }
-            case 2:
-            {
-                return result;
-            }
-            case 3:
-            {
-                return result;
-            }
-            case 4:
+            case 1:
             {
                 return RusLang[Random.Range(0, RusLang.Count)];
             }
