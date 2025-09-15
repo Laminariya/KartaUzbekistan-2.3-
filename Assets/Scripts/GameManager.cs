@@ -39,6 +39,11 @@ public class GameManager : MonoBehaviour
     public int _currentLangAnim;
     private Color _currentColor;
 
+    public TMP_TextJuicer NameRegion;
+    public TMP_TextJuicer DiscriptionRegion;
+    
+    public AnimTextClass BackText;
+
     private float _timer;
 
     private void Awake()
@@ -70,7 +75,7 @@ public class GameManager : MonoBehaviour
         {
             nameRegion.Init();
         }
-        
+        BackText.Init();
         ClientUdp.Init();
     }
 
@@ -81,7 +86,7 @@ public class GameManager : MonoBehaviour
         {
             nameRegion.ChangeLanguage(CurrentLang);
         }
-
+        BackText.ChangeLanguage(CurrentLang);
         StartCoroutine(ShowAnim());
     }
     
@@ -97,6 +102,9 @@ public class GameManager : MonoBehaviour
                 textJuicer.textJuicer.SetProgress(progress);
                 textJuicer.textJuicer.Update();
             }
+            
+            BackText.textJuicer.SetProgress(progress);
+            BackText.textJuicer.Update();
             
             yield return null;
         }
@@ -137,18 +145,25 @@ public class GameManager : MonoBehaviour
 
     private void OffDefault()
     {
+        Debug.Log("OffDefault1");
         //HideAllSliders();
         TemiObrasheniy.gameObject.SetActive(false);
         DefaultScreen.SetActive(false);
         if (_coroutine != null)
             StopCoroutine(_coroutine);
         ChangeLanguage();
+        Debug.Log("OffDefault2");
         b_Uzb.enabled = true;
         b_Rus.enabled = true;
+        NameRegion.SetProgress(0f);
+        NameRegion.Update();
+        DiscriptionRegion.SetProgress(0f);
+        NameRegion.Update();
     }
 
     private void OnLangUzb()
     {
+        Debug.Log("OnLangUzb");
         CurrentLang = 0;
         b_Uzb.enabled = false;
         b_Rus.enabled = false;
@@ -158,7 +173,7 @@ public class GameManager : MonoBehaviour
 
     private void OnLangRus()
     {
-        CurrentLang = 0;
+        CurrentLang = 1;
         b_Uzb.enabled = false;
         b_Rus.enabled = false;
         b_Rus.image.DOFade(1f, 0.3f);

@@ -91,6 +91,8 @@ public class RegionClass : MonoBehaviour
         {
             Name.ChangeLanguage(_manager.CurrentLang);
         }
+        _manager.NameRegion.Text = MenuText1[_manager.CurrentLang];
+        _manager.DiscriptionRegion.Text = MenuText2[_manager.CurrentLang];
     }
 
     private void OnClick()
@@ -105,7 +107,10 @@ public class RegionClass : MonoBehaviour
         _image.enabled = true;
         
        
-
+        _manager.NameRegion.SetProgress(0);
+        _manager.NameRegion.Update();
+        _manager.DiscriptionRegion.SetProgress(0);
+        _manager.DiscriptionRegion.Update();
         
         foreach (var image in Images)
         {
@@ -136,6 +141,12 @@ public class RegionClass : MonoBehaviour
             Name.textJuicer.SetProgress(0);
             Name.textJuicer.Update();
         }
+        
+        _manager.NameRegion.SetProgress(0);
+        _manager.NameRegion.Update();
+        _manager.DiscriptionRegion.SetProgress(0);
+        _manager.DiscriptionRegion.Update();
+        
         StartCoroutine(ShowAnim());
     }
 
@@ -159,6 +170,11 @@ public class RegionClass : MonoBehaviour
                 Name.textJuicer.Update();
             }
             
+            _manager.NameRegion.SetProgress(progress);
+            _manager.NameRegion.Update();
+            _manager.DiscriptionRegion.SetProgress(progress);
+            _manager.DiscriptionRegion.Update();
+            
             yield return null;
         }
     }
@@ -181,6 +197,10 @@ public class RegionClass : MonoBehaviour
                 Name.textJuicer.Update();
             }
 
+            _manager.NameRegion.SetProgress(progress);
+            _manager.NameRegion.Update();
+            _manager.DiscriptionRegion.SetProgress(progress);
+            _manager.DiscriptionRegion.Update();
             
             yield return null;
         }
