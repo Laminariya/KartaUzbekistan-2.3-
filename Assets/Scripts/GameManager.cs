@@ -241,4 +241,20 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+    public void OffRegionButtons()
+    {
+        foreach (var region in Regions)
+        {
+            region.Button.enabled = false;
+        }
+    }
+    
+    public void OnRegionButtons()
+    {
+        foreach (var region in Regions)
+        {
+            region.Button.enabled = true;
+        }
+    }
 }

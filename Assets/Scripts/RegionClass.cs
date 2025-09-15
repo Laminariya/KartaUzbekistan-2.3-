@@ -21,7 +21,7 @@ public class RegionClass : MonoBehaviour
     private List<Image> Images = new List<Image>();
     private List<AnimTextClass> TextJuicers = new List<AnimTextClass>();
     
-    private Button _button;
+    public Button Button;
     private GameManager _manager;
     private Image _image;
     
@@ -30,8 +30,8 @@ public class RegionClass : MonoBehaviour
         _image = GetComponent<Image>();
         gameObject.SetActive(true);
         _manager = GameManager.instance;
-        _button = GetComponentInChildren<Button>();
-        _button.onClick.AddListener(OnClick);
+        Button = GetComponentInChildren<Button>();
+        Button.onClick.AddListener(OnClick);
         Images = GetComponentsInChildren<Image>(true).ToList();
         TextJuicers = GetComponentsInChildren<AnimTextClass>(true).ToList();
         Images.Remove(Images[Images.Count - 1]);
@@ -97,7 +97,7 @@ public class RegionClass : MonoBehaviour
 
     private void OnClick()
     {
-        
+        _manager.OffRegionButtons();
         ChangeLang();
         
         if(_manager.CurrentRegion!=null)
@@ -177,6 +177,7 @@ public class RegionClass : MonoBehaviour
             
             yield return null;
         }
+        _manager.OnRegionButtons();
     }
 
     IEnumerator HideAnim()
