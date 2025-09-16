@@ -25933,7 +25933,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c55d7c4d21c2f146ab045eeb9422b81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Number: 13
+  Number: 14
   Name: {fileID: 0}
   Temi: {fileID: 1269331690}
   MenuText1:
@@ -34962,7 +34962,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1879557262
 RectTransform:
   m_ObjectHideFlags: 0

@@ -139,20 +139,20 @@ public class GameManager : MonoBehaviour
             CurrentRegion.Hide();
         TemiObrasheniy.gameObject.SetActive(false);
         DefaultScreen.SetActive(true);
-        MySendMessage("23kartastandby");
+        MySendMessage("23kartastandby01");
         BackButton.enabled = true;
     }
 
     private void OffDefault()
     {
-        Debug.Log("OffDefault1");
+        //Debug.Log("OffDefault1");
         //HideAllSliders();
         TemiObrasheniy.gameObject.SetActive(false);
         DefaultScreen.SetActive(false);
         if (_coroutine != null)
             StopCoroutine(_coroutine);
         ChangeLanguage();
-        Debug.Log("OffDefault2");
+        //Debug.Log("OffDefault2");
         b_Uzb.enabled = true;
         b_Rus.enabled = true;
         NameRegion.SetProgress(0f);
@@ -163,7 +163,7 @@ public class GameManager : MonoBehaviour
 
     private void OnLangUzb()
     {
-        Debug.Log("OnLangUzb");
+        //Debug.Log("OnLangUzb");
         CurrentLang = 0;
         b_Uzb.enabled = false;
         b_Rus.enabled = false;
@@ -195,22 +195,12 @@ public class GameManager : MonoBehaviour
         message += str;
         switch (CurrentLang)
         {
+            case 0:
+            {
+                message += "uz";
+                break;
+            }
             case 1:
-            {
-                message += "uzb";
-                break;
-            }
-            case 2:
-            {
-                message += "arab";
-                break;
-            }
-            case 3:
-            {
-                message += "en";
-                break;
-            }
-            case 4:
             {
                 message += "ru";
                 break;
