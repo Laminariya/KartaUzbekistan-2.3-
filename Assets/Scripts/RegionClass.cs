@@ -124,7 +124,7 @@ public class RegionClass : MonoBehaviour
         _image.DOFade(1f, 0.5f).OnComplete(StartShowAnim);
         
 
-        GameManager.instance.MySendMessage("23karta"+Number);
+        GameManager.instance.MySendMessage("23kartastena"+Number);
     }
 
     public void StartShowAnim()
