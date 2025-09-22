@@ -139,7 +139,7 @@ public class GameManager : MonoBehaviour
             CurrentRegion.Hide();
         TemiObrasheniy.gameObject.SetActive(false);
         DefaultScreen.SetActive(true);
-        MySendMessage("23kartastandby01");
+        MySendMessage("23kartastandby");
         BackButton.enabled = true;
     }
 
@@ -197,7 +197,7 @@ public class GameManager : MonoBehaviour
         {
             case 0:
             {
-                message += "uz";
+                message += "uzb";
                 break;
             }
             case 1:
